@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  php-server:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/var/www/html
+    networks:
+      - app-network
+  vite-dev:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
