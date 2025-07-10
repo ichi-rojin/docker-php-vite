@@ -1,4 +1,6 @@
 import { defineConfig } from 'vite';
+import sassGlobImports from 'vite-plugin-sass-glob-import';
+import { resolve } from 'path'
 
 export default defineConfig({
   server: {
@@ -15,8 +17,11 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../dist',
+    outDir: './dist',
     emptyOutDir: true,
-    assetsDir: 'assets'
-  }
+    assetsDir: 'assets',
+  },
+  plugins: [
+    sassGlobImports()
+  ],
 });
