@@ -8,10 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
 
-    "_build:docker": "docker exec docker-php-vite-vite-dev-1 npm run build",
+    "_build:docker": "docker exec $(docker ps --filter 'name=vite-dev' --format '{{.Names}}') npm run build",
     "_export:prepare-dir": "wsl rm -rf ~/vite-build-result && wsl mkdir -p ~/vite-build-result",
-    "_export:copy-files": "docker cp docker-php-vite-vite-dev-1:/app/dist/. ~/vite-build-result",
+    "_export:copy-files": "docker cp $(docker ps --filter 'name=vite-dev' --format '{{.Names}}'):/app/dist/. ~/vite-build-result",
     "_export:open-explorer": "explorer.exe ~/vite-build-result",
+    
     "export-build": "npm run _build:docker && npm run _export:prepare-dir && npm run _export:copy-files && npm run _export:open-explorer"
   },
   "devDependencies": {
