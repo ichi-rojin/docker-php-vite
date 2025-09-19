@@ -8,12 +8,16 @@
     "build": "vite build",
     "preview": "vite preview",
 
-    "_build:docker": "docker exec $(docker ps --filter 'name=vite-dev' --format '{{.Names}}') npm run build",
-    "_export:prepare-dir": "wsl rm -rf ~/vite-build-result && wsl mkdir -p ~/vite-build-result",
-    "_export:copy-files": "docker cp $(docker ps --filter 'name=vite-dev' --format '{{.Names}}'):/app/dist/. ~/vite-build-result",
-    "_export:open-explorer": "explorer.exe ~/vite-build-result",
-    
-    "export-build": "npm run _build:docker && npm run _export:prepare-dir && npm run _export:copy-files && npm run _export:open-explorer"
+    "_build:docker": "bash -c 'docker exec $(docker ps --filter \"name=vite-dev\" --format \"{{.Names}}\") npm run build'",
+    "_export:prepare-dir:unix": "rm -rf ~/vite-build-result && mkdir -p ~/vite-build-result",
+    "_export:prepare-dir:win": "powershell -Command \"Remove-Item -Recurse -Force $HOME/vite-build-result; New-Item -ItemType Directory $HOME/vite-build-result\"",
+
+    "_export:copy-files": "bash -c 'docker cp $(docker ps --filter \"name=vite-dev\" --format \"{{.Names}}\"):/app/dist/. ~/vite-build-result'",
+
+    "_export:open-explorer:unix": "open ~/vite-build-result",
+    "_export:open-explorer:win": "explorer.exe ~/vite-build-result",
+
+    "export-build": "npm run _build:docker && (if [ \"$OS\" = 'Windows_NT' ]; then npm run _export:prepare-dir:win; else npm run _export:prepare-dir:unix; fi) && npm run _export:copy-files && (if [ \"$OS\" = 'Windows_NT' ]; then npm run _export:open-explorer:win; else npm run _export:open-explorer:unix; fi)"
   },
   "devDependencies": {
     "sass": "^1.89.2",
